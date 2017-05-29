@@ -96,6 +96,9 @@ void makeset(string tmp) {
     return;
 }
 
+// コンビネーションを求める。
+// functionがtrueならそこでやめる。
+// subsetを後ろから埋めていく
 bool for_each_combination(vector<char>::iterator begin,
         vector<char>::iterator end,
         int n,
@@ -118,12 +121,14 @@ bool for_each_combination(vector<char>::iterator begin,
 
 }
 
+// 受け取ったcに対してfor_each_combinationを適用する
 string search_set(string tmp, int i, vector<char> &c) {
     string input = tmp;
 
     vector<char> subset(i);
     if(
             for_each_combination(c.begin(), c.end(), subset.size() - 1,
+                // functionは辞書にsubstringが辞書にあればtrue,なければfalseを返す。
                 [=](vector<char> &comb) {
                 string str = input;
                 for(char c : comb) {
@@ -154,6 +159,7 @@ string search_set(string tmp, int i, vector<char> &c) {
 }
 
 string search(string input, int i) {
+    // when nothing will be deleted
     if(i == 0) {
         auto z = dic.find(input);
         if (z != dic.end())
@@ -162,6 +168,7 @@ string search(string input, int i) {
             return "";
     }
 
+    // compare c3(most lower point set) first
     string res;
     if( (res = search_set(input, i, c3)) != "")
         return res;
@@ -193,7 +200,7 @@ int main() {
         makeset(input);
 
         string res;
-        for(int i = 0; i < 16; i++) {
+        for(int i = 0; i < input.length(); i++) {
             if( (res = search(input, i)) == "") 
                 continue;
             cout << res << endl;
