@@ -92,7 +92,6 @@ void makeset(string tmp) {
     for(char s : input) {
         c1.push_back(s);
     }
-
     return;
 }
 
@@ -124,11 +123,14 @@ bool for_each_combination(vector<char>::iterator begin,
 // 受け取ったcに対してfor_each_combinationを適用する
 string search_set(string tmp, int i, vector<char> &c) {
     string input = tmp;
+    // important
+    if (i > c.size())
+        return "";
 
     vector<char> subset(i);
     if(
             for_each_combination(c.begin(), c.end(), subset.size() - 1,
-                // functionは辞書にsubstringが辞書にあればtrue,なければfalseを返す。
+                // functionはsubstringが辞書にあればtrue,なければfalseを返す。
                 [=](vector<char> &comb) {
                 string str = input;
                 for(char c : comb) {
@@ -187,11 +189,14 @@ int main() {
     for(;;) {
         cout << ">> ";
         string input;
+        /*
         for(int i = 0; i < 16; i++) {
             string s;
             cin >> s;
             input += s;
         }
+        */
+        cin >> input;
         transform(input.begin(), input.end(), input.begin(), ::toupper);
 
         // Substitute any QU to Q
@@ -205,6 +210,7 @@ int main() {
 
         string res;
         for(int i = 0; i < input.length(); i++) {
+            cout << i << endl;
             if( (res = search(input, i)) == "") 
                 continue;
             cout << res << endl;
