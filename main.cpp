@@ -10,6 +10,7 @@
 using namespace std;
 
 typedef pair<string, string> P;
+// 辞書は赤黒木でkey, valueで管理する
 map<string, string> dic;
 
 // only most low point charactors
@@ -30,9 +31,15 @@ void makedic(void) {
             transform(line.begin(), line.end(), line.begin(), ::toupper);
 
             // Substitute any QU to Q
-            size_t qu = line.find("QU");
-            if(qu != string::npos)
-                line.replace(qu, 2, "Q");
+            for(;;) {
+                int flag = 1;
+                size_t qu = line.find("QU");
+                if(qu != string::npos) {
+                    line.replace(qu, 2, "Q");
+                    flag = 0;
+                }
+                if(flag) break;
+            }
 
             if(line.length() > 16)
                 continue;
@@ -134,15 +141,15 @@ string search_set(string tmp, int i, vector<char> &c) {
                 [=](vector<char> &comb) {
                 string str = input;
                 for(char c : comb) {
-                    int find = str.find(c);
-                    if(find != string::npos)
-                        str.erase(find, 1);
+                int find = str.find(c);
+                if(find != string::npos)
+                str.erase(find, 1);
                 }
                 auto res = dic.find(str);
                 if (res != dic.end() )
-                    return true;
+                return true;
                 else
-                    return false;
+                return false;
                 },
                 subset) ) {
 
@@ -160,7 +167,7 @@ string search_set(string tmp, int i, vector<char> &c) {
     return "";
 }
 
-string search(string input, int i) {
+string search(string input, int i, int w) {
     // when nothing will be deleted
     if(i == 0) {
         auto z = dic.find(input);
@@ -172,14 +179,55 @@ string search(string input, int i) {
 
     // compare c3(most lower point set) first
     string res;
-    if( (res = search_set(input, i, c3)) != "")
-        return res;
-    if( (res = search_set(input, i, c2)) != "")
-        return res;
-    if( (res = search_set(input, i, c1)) != "")
-        return res;
+    if(w == 3)
+        if( (res = search_set(input, i, c3)) != "")
+            return res;
+    if(w == 2)
+        if( (res = search_set(input, i, c2)) != "")
+            return res;
+    if(w == 1)
+        if( (res = search_set(input, i, c1)) != "")
+            return res;
 
     return "";
+}
+
+int count_value(string tmp) {
+    char s1[] = {'X','Z','Q','K'};
+    char s2[] = {'Y','F','H','C','W','M','P','V','L'};
+    char s3[] = {'A', 'B', 'D', 'E', 'G', 'I', 'J', 'N', 'O', 'R', 'S', 'T', 'U'};
+    int res = 0;
+    string input = tmp;
+
+    for(;;) {
+        int flag = 1;
+        for(char c : s1) {
+            int find = input.find(c);
+            if(find != string::npos) {
+                input.erase(find, 1);
+                res += 3;
+                flag = 0;
+            }
+        }
+        for(char c : s2) {
+            int find = input.find(c);
+            if(find != string::npos) {
+                input.erase(find, 1);
+                res += 2;
+                flag = 0;
+            }
+        }
+        for(char c : s3) {
+            int find = input.find(c);
+            if(find != string::npos) {
+                input.erase(find, 1);
+                res += 1;
+                flag = 0;
+            }
+        }
+        if(flag) break;
+    }
+    return res;
 }
 
 int main() {
@@ -189,32 +237,42 @@ int main() {
     for(;;) {
         cout << ">> ";
         string input;
-        /*
         for(int i = 0; i < 16; i++) {
             string s;
             cin >> s;
             input += s;
         }
-        */
-        cin >> input;
         transform(input.begin(), input.end(), input.begin(), ::toupper);
 
         // Substitute any QU to Q
-        size_t qu = input.find("QU");
-        if(qu != string::npos)
-            input.replace(qu, 2, "Q");
+        for(;;) {
+            int flag = 1;
+            size_t qu = input.find("QU");
+            if(qu != string::npos) {
+                input.replace(qu, 2, "Q");
+                flag = 0;
+            }
+            if(flag) break;
+        }
         sort(input.begin(), input.end());
 
         // c3から使う
         makeset(input);
 
         string res;
+        string tmp;
+        int max[3] = {0};
         for(int i = 0; i < input.length(); i++) {
-            cout << i << endl;
-            if( (res = search(input, i)) == "") 
-                continue;
-            cout << res << endl;
-            break;
+            for (int j = 0; j < 3; j++) {
+                if((max[j] == 0) && (res = search(input, i, 3 - j)) != "") { 
+                    tmp = res;
+                    transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
+                    max[j] = count_value(tmp);
+                    cout << res << " : " << max[j] << endl;
+                }
+            }
+            if((max[0] != 0) && (max[1] != 0) && (max[2] != 0))
+                break;
         }
     }
     return 0;
