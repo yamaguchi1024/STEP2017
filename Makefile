@@ -1,5 +1,5 @@
 CXX = clang++
-CXXFLAGS = -Wall -std=c++11 -O2
+CXXFLAGS = -Wall -std=c++11
 
 all: main
 

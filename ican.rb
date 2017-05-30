@@ -48,7 +48,7 @@ count = 0
 end
 
 p count
-if count >= 1830 then
+if count >= 1800 then
 
     HIURL = "https://icanhazwordz.appspot.com/highscores"
     hiuri = URI.parse(HIURL)
