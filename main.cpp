@@ -57,88 +57,6 @@ void makeset(string tmp) {
     return;
 }
 
-// コンビネーションを求める。
-// functionがtrueならそこでやめる。
-// subsetを後ろから埋めていく
-bool for_each_combination(vector<char>::iterator begin,
-        vector<char>::iterator end,
-        int n,
-        function<bool(vector<char> &)> callback,
-        vector<char> &subset) {
-
-    if(n < 0)
-        return callback(subset);
-
-    if(end - begin == n) {
-        subset[n] = *begin;
-        return for_each_combination(begin + 1, end, n - 1, callback, subset);
-    }
-
-    if(for_each_combination(begin + 1, end, n, callback, subset))
-        return true;
-
-    subset[n] = *begin;
-    return for_each_combination(begin + 1, end, n - 1, callback, subset);
-
-}
-
-// 受け取ったcに対してfor_each_combinationを適用する
-string search_set(string tmp, int i, vector<char> &c) {
-    string input = tmp;
-    // important
-    if (i > c.size())
-        return "";
-
-    vector<char> subset(i);
-    if(
-            for_each_combination(c.begin(), c.end(), subset.size() - 1,
-                // functionはsubstringが辞書にあればtrue,なければfalseを返す。
-                [=](vector<char> &comb) {
-                string str = input;
-                for(char c : comb) {
-                int find = str.find(c);
-                if(find != string::npos)
-                str.erase(find, 1);
-                }
-                auto res = dic.find(str);
-                if (res != dic.end() )
-                return true;
-                else
-                return false;
-                },
-                subset) ) {
-
-        for(char c : subset) {
-            int find = input.find(c);
-            if(find != string::npos)
-                input.erase(find, 1);
-        }
-        auto res = dic.find(input);
-        if (res != dic.end() )
-            return res->second;
-        else
-            return "";
-    }
-    return "";
-}
-
-string search(string input, int i) {
-    // when nothing will be deleted
-    if(i == 0) {
-        auto z = dic.find(input);
-        if (z != dic.end())
-            return z->second;
-        else
-            return "";
-    }
-
-    string res;
-    if( (res = search_set(input, i, c)) != "")
-        return res;
-
-    return "";
-}
-
 int count_value(string tmp) {
     char s1[] = {'X','Z','Q','K','J'};
     char s2[] = {'Y','F','H','C','W','M','P','V','L'};
@@ -175,6 +93,94 @@ int count_value(string tmp) {
         if(flag) break;
     }
     return (res+1)*(res+1);
+}
+
+// コンビネーションを求める。
+// functionがtrueならそこでやめる。
+// subsetを後ろから埋めていく
+bool for_each_combination(vector<char>::iterator begin,
+        vector<char>::iterator end,
+        int n,
+        function<bool(vector<char> &)> callback,
+        vector<char> &subset) {
+
+    if(n < 0)
+        return callback(subset);
+
+    if(end - begin == n) {
+        subset[n] = *begin;
+        return for_each_combination(begin + 1, end, n - 1, callback, subset);
+    }
+
+    if(for_each_combination(begin + 1, end, n, callback, subset))
+        return true;
+
+    subset[n] = *begin;
+    return for_each_combination(begin + 1, end, n - 1, callback, subset);
+
+}
+
+// 受け取ったcに対してfor_each_combinationを適用する
+string search_set(string tmp, int i, vector<char> &c) {
+    string input = tmp;
+    // important
+    if (i > c.size())
+        return "";
+
+    int max = 0;
+    vector<char> subset(i);
+    if(
+            for_each_combination(c.begin(), c.end(), subset.size() - 1,
+                // functionはsubstringが辞書にあればtrue,なければfalseを返す。
+                [=](vector<char> &comb) {
+                string str = input;
+                for(char c : comb) {
+                    int find = str.find(c);
+                    if(find != string::npos)
+                    str.erase(find, 1);
+                }
+                auto res = dic.find(str);
+                if (res != dic.end() ) {
+                    transform(str.begin(), str.end(), str.begin(), ::toupper);
+                    if(count_value(str) > max)
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return false;
+                },
+                subset) ) {
+
+        for(char c : subset) {
+            int find = input.find(c);
+            if(find != string::npos)
+                input.erase(find, 1);
+        }
+        auto res = dic.find(input);
+        if (res != dic.end() )
+            return res->second;
+        else
+            return "";
+    }
+    return "";
+}
+
+string search(string input, int i) {
+    // when nothing will be deleted
+    if(i == 0) {
+        auto z = dic.find(input);
+        if (z != dic.end())
+            return z->second;
+        else
+            return "";
+    }
+
+    string res;
+    if( (res = search_set(input, i, c)) != "")
+        return res;
+
+    return "";
 }
 
 int main() {
