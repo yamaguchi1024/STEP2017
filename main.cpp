@@ -13,8 +13,6 @@ typedef pair<string, string> P;
 // 辞書は赤黒木でkey, valueで管理する
 map<string, string> dic;
 
-vector<char> c;
-
 // Make dictionary
 void makedic(void) {
     string line;
@@ -42,17 +40,6 @@ void makedic(void) {
             dic.insert(P(line, val));
         }
         dict.close();
-    }
-    return;
-}
-
-void makeset(string tmp) {
-    c.clear();
-    string input = tmp;
-
-    // make c
-    for(char s : input) {
-        c.push_back(s);
     }
     return;
 }
@@ -95,92 +82,36 @@ int count_value(string tmp) {
     return (res+1)*(res+1);
 }
 
-// コンビネーションを求める。
-// functionがtrueならそこでやめる。
-// subsetを後ろから埋めていく
-bool for_each_combination(vector<char>::iterator begin,
-        vector<char>::iterator end,
-        int n,
-        function<bool(vector<char> &)> callback,
-        vector<char> &subset) {
-
-    if(n < 0)
-        return callback(subset);
-
-    if(end - begin == n) {
-        subset[n] = *begin;
-        return for_each_combination(begin + 1, end, n - 1, callback, subset);
-    }
-
-    if(for_each_combination(begin + 1, end, n, callback, subset))
-        return true;
-
-    subset[n] = *begin;
-    return for_each_combination(begin + 1, end, n - 1, callback, subset);
-
-}
-
-// 受け取ったcに対してfor_each_combinationを適用する
-string search_set(string tmp, int i, vector<char> &c) {
-    string input = tmp;
-    // important
-    if (i > c.size())
-        return "";
-
+void print_max(string input) {
     int max = 0;
-    vector<char> subset(i);
-    if(
-            for_each_combination(c.begin(), c.end(), subset.size() - 1,
-                // functionはsubstringが辞書にあればtrue,なければfalseを返す。
-                [=](vector<char> &comb) {
-                string str = input;
-                for(char c : comb) {
-                    int find = str.find(c);
-                    if(find != string::npos)
-                    str.erase(find, 1);
-                }
-                auto res = dic.find(str);
-                if (res != dic.end() ) {
-                    transform(str.begin(), str.end(), str.begin(), ::toupper);
-                    if(count_value(str) > max)
-                        return true;
-                    else
-                        return false;
-                }
-                else
-                    return false;
-                },
-                subset) ) {
+    string max_s = "";
 
-        for(char c : subset) {
-            int find = input.find(c);
-            if(find != string::npos)
-                input.erase(find, 1);
+    for(int i = 0; i < (1 << 16); i++) {
+        char s[16] = {} ;
+        for(int j = 0; j < 16; j++) {
+            if(i & (1 << j)) {
+                s[j] = input[j];
+            }
         }
-        auto res = dic.find(input);
-        if (res != dic.end() )
-            return res->second;
-        else
-            return "";
-    }
-    return "";
-}
+        string key = "";
+        for(int j = 0; j < 16; j++)
+            if(s[j])
+                key += s[j];
 
-string search(string input, int i) {
-    // when nothing will be deleted
-    if(i == 0) {
-        auto z = dic.find(input);
-        if (z != dic.end())
-            return z->second;
-        else
-            return "";
+        auto d = dic.find(key);
+        if(d != dic.end() ) {
+            string tmp = d -> second;
+            transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
+            int c = count_value(tmp);
+            if( c > max ) {
+                max = c;
+                max_s = d -> second;
+            }
+        }
     }
 
-    string res;
-    if( (res = search_set(input, i, c)) != "")
-        return res;
-
-    return "";
+    cout << max_s << " " << max << endl;
+    return;
 }
 
 int main() {
@@ -204,24 +135,7 @@ int main() {
         }
         sort(input.begin(), input.end());
 
-        // c3から使う
-        makeset(input);
-
-        string res,tmp;
-        int max = 0;
-        string max_s = "";
-        for(int i = 0; i < input.length(); i++) {
-                if( (res = search(input, i)) != "") { 
-                    tmp = res;
-                    transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
-                    int huga;
-                    if( (huga = count_value(tmp)) > max) {
-                        max_s = res;
-                        max = huga;
-                    }
-            }
-        }
-        cout << max_s << " " << max << endl;
+        print_max(input);
     }
     return 0;
 }

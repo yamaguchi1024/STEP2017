@@ -19,12 +19,11 @@ html = response.body
 moves = []
 seed = html.scan(/name=Seed value="(.*?)"/).flatten.join("")
 started = html.scan(/name=Started value="(.*?)"/).flatten.join("")
-p seed
-p started
 count = 0
 
 10.times do
     chars = html.scan(/">(.)<\/div><\/td>/).flatten.join("")
+    p chars
 
     main.puts chars
     ans = nil
@@ -32,8 +31,8 @@ count = 0
     Timeout::timeout(2) {
         ans,num = main.gets.chomp.split(" ")
     }
+    p ans
     count += num.to_i
-    p moves
 
     # post
     req = Net::HTTP::Post.new(uri.request_uri)
