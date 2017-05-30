@@ -1,3 +1,4 @@
+require 'timeout'
 require 'uri'
 require 'net/http'
 require 'net/https'
@@ -26,7 +27,11 @@ count = 0
     chars = html.scan(/">(.)<\/div><\/td>/).flatten.join("")
 
     main.puts chars
-    ans,num = main.gets.chomp.split(" ")
+    ans = nil
+    num = nil
+    Timeout::timeout(2) {
+        ans,num = main.gets.chomp.split(" ")
+    }
     count += num.to_i
     p moves
 
