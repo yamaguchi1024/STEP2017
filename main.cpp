@@ -13,13 +13,7 @@ typedef pair<string, string> P;
 // 辞書は赤黒木でkey, valueで管理する
 map<string, string> dic;
 
-// only most low point charactors
-vector<char> c3;
-// c3 and Y,F,H,C,W,M,P,V,L
-vector<char> c2;
-// c2 and X,Z,Qu,K
-vector<char> c1;
-
+vector<char> c;
 
 // Make dictionary
 void makedic(void) {
@@ -53,9 +47,7 @@ void makedic(void) {
 }
 
 void makeset(string tmp) {
-    c1.clear();
-    c2.clear();
-    c3.clear();
+    c.clear();
 
     string input = tmp;
 
@@ -254,28 +246,20 @@ int main() {
         // c3から使う
         makeset(input);
 
-        string res;
-        string tmp;
-        int max[3] = {0};
-        string maxs[3];
+        string res,tmp;
+        int max;
+        string max_s;
         for(int i = 0; i < input.length(); i++) {
-            for (int j = 0; j < 3; j++) {
-                if((max[j] == 0) && (res = search(input, i, 3 - j)) != "") { 
+                if(res = search(input, i) != "") { 
                     tmp = res;
                     transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
-                    max[j] = count_value(tmp);
-                    maxs[j] = res;
-                }
+                    if( count_value(tmp) > max) {
+                        max_s = res;
+                        max = count_value(tmp);
+                    }
             }
-            if((max[0] != 0) && (max[1] != 0) && (max[2] != 0))
-                break;
         }
-        if(max[0] >= max[1] && max[0] >= max[2])
-            cout << maxs[0] << " " << max[0] << endl;
-        if(max[1] >= max[0] && max[1] >= max[2])
-            cout << maxs[1] << " " << max[1] << endl;
-        else
-            cout << maxs[2] << " " << max[2] << endl;
+        cout << max_s << " " << max << endl;
     }
     return 0;
 }
