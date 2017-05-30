@@ -235,13 +235,8 @@ int main() {
 
     // Compare user input and dictionary
     for(;;) {
-        cout << ">> ";
         string input;
-        for(int i = 0; i < 16; i++) {
-            string s;
-            cin >> s;
-            input += s;
-        }
+        cin >> input;
         transform(input.begin(), input.end(), input.begin(), ::toupper);
 
         // Substitute any QU to Q
@@ -262,18 +257,25 @@ int main() {
         string res;
         string tmp;
         int max[3] = {0};
+        string maxs[3];
         for(int i = 0; i < input.length(); i++) {
             for (int j = 0; j < 3; j++) {
                 if((max[j] == 0) && (res = search(input, i, 3 - j)) != "") { 
                     tmp = res;
                     transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
                     max[j] = count_value(tmp);
-                    cout << res << " : " << max[j] << endl;
+                    maxs[j] = res;
                 }
             }
             if((max[0] != 0) && (max[1] != 0) && (max[2] != 0))
                 break;
         }
+        if(max[0] >= max[1] && max[0] >= max[2])
+            cout << maxs[0] << " " << max[0] << endl;
+        if(max[1] >= max[0] && max[1] >= max[2])
+            cout << maxs[1] << " " << max[1] << endl;
+        else
+            cout << maxs[2] << " " << max[2] << endl;
     }
     return 0;
 }
