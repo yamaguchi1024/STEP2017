@@ -128,42 +128,31 @@ string search_set(string tmp, int i, vector<char> &c) {
         return "";
 
     int max = 0;
+    string max_s = "";
     vector<char> subset(i);
-    if(
-            for_each_combination(c.begin(), c.end(), subset.size() - 1,
-                // functionはsubstringが辞書にあればtrue,なければfalseを返す。
-                [=](vector<char> &comb) {
-                string str = input;
-                for(char c : comb) {
-                    int find = str.find(c);
-                    if(find != string::npos)
+    for_each_combination(c.begin(), c.end(), subset.size() - 1,
+            // functionはsubstringが辞書にあればtrue,なければfalseを返す。
+            [&](vector<char> &comb) {
+            string str = input;
+            for(char c : comb) {
+                int find = str.find(c);
+                if(find != string::npos)
                     str.erase(find, 1);
+            }
+            auto res = dic.find(str);
+            if (res != dic.end() ) {
+                transform(str.begin(), str.end(), str.begin(), ::toupper);
+                int hoge;
+                if( (hoge = count_value(str)) > max) {
+                    max = hoge;
+                    max_s = str;
                 }
-                auto res = dic.find(str);
-                if (res != dic.end() ) {
-                    transform(str.begin(), str.end(), str.begin(), ::toupper);
-                    if(count_value(str) > max)
-                        return true;
-                    else
-                        return false;
-                }
-                else
-                    return false;
-                },
-                subset) ) {
+            }
+            return false;
+            },
+            subset);
 
-        for(char c : subset) {
-            int find = input.find(c);
-            if(find != string::npos)
-                input.erase(find, 1);
-        }
-        auto res = dic.find(input);
-        if (res != dic.end() )
-            return res->second;
-        else
-            return "";
-    }
-    return "";
+    return max_s;
 }
 
 string search(string input, int i) {
@@ -211,14 +200,14 @@ int main() {
         int max = 0;
         string max_s = "";
         for(int i = 0; i < input.length(); i++) {
-                if( (res = search(input, i)) != "") { 
-                    tmp = res;
-                    transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
-                    int huga;
-                    if( (huga = count_value(tmp)) > max) {
-                        max_s = res;
-                        max = huga;
-                    }
+            if( (res = search(input, i)) != "") { 
+                tmp = res;
+                transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
+                int huga;
+                if( (huga = count_value(tmp)) > max) {
+                    max_s = res;
+                    max = huga;
+                }
             }
         }
         cout << max_s << " " << max << endl;
