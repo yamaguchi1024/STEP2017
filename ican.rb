@@ -48,13 +48,13 @@ count = 0
 end
 
 p count
-if count >= 1830 then
+if count >= 1974 then
 
     HIURL = "https://icanhazwordz.appspot.com/highscores"
     hiuri = URI.parse(HIURL)
 
     req = Net::HTTP::Post.new(hiuri.path)
-    req.set_form_data({'Seed' => seed, 'Started' => started, 'NickName' => 'Yuka', 'URL' => 'https://github.com/yamaguchi1024', 'Moves' => moves}, ';')
+    req.set_form_data({'Seed' => seed, 'Started' => started, 'Agent' => 'Robot', 'Name' => 'Yuka Takahashi', 'Email' => 'yukatkh@gmail.com', 'NickName' => 'Yuka', 'URL' => 'https://github.com/yamaguchi1024', 'Moves' => moves}, ';')
 
     res = Net::HTTP.new(uri.host, uri.port).tap{|h| h.use_ssl=true}.start do |http|
         response = http.request(req)
