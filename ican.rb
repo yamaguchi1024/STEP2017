@@ -19,12 +19,11 @@ html = response.body
 moves = []
 seed = html.scan(/name=Seed value="(.*?)"/).flatten.join("")
 started = html.scan(/name=Started value="(.*?)"/).flatten.join("")
-p seed
-p started
 count = 0
 
 10.times do
     chars = html.scan(/">(.)<\/div><\/td>/).flatten.join("")
+    p chars
 
     main.puts chars
     ans = nil
@@ -32,8 +31,8 @@ count = 0
     Timeout::timeout(2) {
         ans,num = main.gets.chomp.split(" ")
     }
+    p ans
     count += num.to_i
-    p moves
 
     # post
     req = Net::HTTP::Post.new(uri.request_uri)
@@ -48,13 +47,13 @@ count = 0
 end
 
 p count
-if count >= 1830 then
+if count >= 1974 then
 
     HIURL = "https://icanhazwordz.appspot.com/highscores"
     hiuri = URI.parse(HIURL)
 
     req = Net::HTTP::Post.new(hiuri.path)
-    req.set_form_data({'Seed' => seed, 'Started' => started, 'NickName' => 'Yuka', 'URL' => 'https://github.com/yamaguchi1024', 'Moves' => moves}, ';')
+    req.set_form_data({'Seed' => seed, 'Started' => started, 'Agent' => 'Robot', 'Name' => 'Yuka Takahashi', 'Email' => 'yukatkh@gmail.com', 'NickName' => 'Yuka', 'URL' => 'https://github.com/yamaguchi1024', 'Moves' => moves}, ';')
 
     res = Net::HTTP.new(uri.host, uri.port).tap{|h| h.use_ssl=true}.start do |http|
         response = http.request(req)
