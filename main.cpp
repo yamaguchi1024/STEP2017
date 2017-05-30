@@ -48,48 +48,11 @@ void makedic(void) {
 
 void makeset(string tmp) {
     c.clear();
-
     string input = tmp;
 
-    // make c3
-    char s3[] = {'A', 'B', 'D', 'E', 'G', 'I', 'J', 'N', 'O', 'R', 'S', 'T', 'U'};
-
-    int flag;
-    for(;;) {
-        flag = 1;
-        for(char s : s3) {
-            size_t find = input.find(s);
-            if(find == string::npos)
-                continue;
-            c3.push_back(s);
-            input.erase(find, 1);
-            flag = 0;
-        } 
-        if(flag) break;
-    }
-
-    // make c2
-    // c3 and Y,F,H,C,W,M,P,V,L
-    c2 = c3;
-    char s2[] = {'Y','F','H','C','W','M','P','V','L'};
-
-    for(;;) {
-        flag = 1;
-        for(char s : s2) {
-            size_t find = input.find(s);
-            if(find == string::npos)
-                continue;
-            c2.push_back(s);
-            input.erase(find, 1);
-            flag = 0;
-        } 
-        if(flag) break;
-    }
-
-    // make c1
-    c1 = c2;
+    // make c
     for(char s : input) {
-        c1.push_back(s);
+        c.push_back(s);
     }
     return;
 }
@@ -159,7 +122,7 @@ string search_set(string tmp, int i, vector<char> &c) {
     return "";
 }
 
-string search(string input, int i, int w) {
+string search(string input, int i) {
     // when nothing will be deleted
     if(i == 0) {
         auto z = dic.find(input);
@@ -169,25 +132,17 @@ string search(string input, int i, int w) {
             return "";
     }
 
-    // compare c3(most lower point set) first
     string res;
-    if(w == 3)
-        if( (res = search_set(input, i, c3)) != "")
-            return res;
-    if(w == 2)
-        if( (res = search_set(input, i, c2)) != "")
-            return res;
-    if(w == 1)
-        if( (res = search_set(input, i, c1)) != "")
-            return res;
+    if( (res = search_set(input, i, c)) != "")
+        return res;
 
     return "";
 }
 
 int count_value(string tmp) {
-    char s1[] = {'X','Z','Q','K'};
+    char s1[] = {'X','Z','Q','K','J'};
     char s2[] = {'Y','F','H','C','W','M','P','V','L'};
-    char s3[] = {'A', 'B', 'D', 'E', 'G', 'I', 'J', 'N', 'O', 'R', 'S', 'T', 'U'};
+    char s3[] = {'A', 'B', 'D', 'E', 'G', 'I', 'N', 'O', 'R', 'S', 'T', 'U'};
     int res = 0;
     string input = tmp;
 
@@ -219,7 +174,7 @@ int count_value(string tmp) {
         }
         if(flag) break;
     }
-    return res;
+    return (res+1)*(res+1);
 }
 
 int main() {
@@ -247,15 +202,16 @@ int main() {
         makeset(input);
 
         string res,tmp;
-        int max;
-        string max_s;
+        int max = 0;
+        string max_s = "";
         for(int i = 0; i < input.length(); i++) {
-                if(res = search(input, i) != "") { 
+                if( (res = search(input, i)) != "") { 
                     tmp = res;
                     transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
-                    if( count_value(tmp) > max) {
+                    int huga;
+                    if( (huga = count_value(tmp)) > max) {
                         max_s = res;
-                        max = count_value(tmp);
+                        max = huga;
                     }
             }
         }
