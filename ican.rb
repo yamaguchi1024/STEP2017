@@ -23,7 +23,6 @@ count = 0
 
 10.times do
     chars = html.scan(/">(.)<\/div><\/td>/).flatten.join("")
-    p chars
 
     main.puts chars
     ans = nil
@@ -31,7 +30,6 @@ count = 0
     Timeout::timeout(2) {
         ans,num = main.gets.chomp.split(" ")
     }
-    p ans
     count += num.to_i
 
     # post
@@ -47,7 +45,7 @@ count = 0
 end
 
 p count
-if count >= 1974 then
+if count >= 2231 then
 
     HIURL = "https://icanhazwordz.appspot.com/highscores"
     hiuri = URI.parse(HIURL)
