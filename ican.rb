@@ -22,7 +22,7 @@ started = html.scan(/name=Started value="(.*?)"/).flatten.join("")
 count = 0
 
 10.times do
-    chars = html.scan(/">(.)<\/div><\/td>/).flatten.join("")
+    chars = html.scan(/">(.*?)<\/div><\/td>/).flatten.join("")
 
     main.puts chars
     ans = nil
