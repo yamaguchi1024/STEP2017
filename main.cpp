@@ -119,7 +119,7 @@ int main() {
 
     // Compare user input and dictionary
     for(;;) {
-        string input;
+        string input="";
         cin >> input;
         transform(input.begin(), input.end(), input.begin(), ::toupper);
 
