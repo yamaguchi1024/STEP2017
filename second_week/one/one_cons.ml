@@ -1,3 +1,10 @@
+let rec reverse1 = fun x y ->
+        match x with
+            |[] -> y
+                |a::b -> reverse1 b (a::y) ;;
+
+let reverse = fun x -> reverse1 x [] ;;
+
 module type SEMIRING =
 sig
   type t
@@ -34,8 +41,8 @@ module Vector =
         | a::b -> 
                 match y with
                 |[] -> q
-                | c::d -> add1 b d (q@[(T.add a c)])
-    let add x y = add1 x y []
+                | c::d -> add1 b d ((T.add a c)::q)
+    let add x y = reverse (add1 x y [])
     let rec mul1 x y q =
         match x with 
         | [] -> q
@@ -67,20 +74,20 @@ module Matrix =
       match x with
       | a::b ->
          (match a with
-         |c::d -> (bind b (y@[c]))
+         |c::d -> (bind b (c::y))
          |[]  -> raise Comatta)
       | _ -> y
     let rec sakujo x y =
       match x with
       | a::b -> 
           (match a with
-            |c::d -> (sakujo b (y@[d]))
+            |c::d -> (sakujo b (d::y))
             |[] -> raise Comatta)
       | _ -> y
     let rec trans1 x y =
       match x with
        |a::b when a=[] -> y
-       |a::b -> trans1 (sakujo x []) (y@[bind x []])
+       |a::b -> trans1 (sakujo x []) ((bind x [])::y)
        | _ -> y
     let trans x = trans1 x []
     let rec add2 x y q =
@@ -89,15 +96,15 @@ module Matrix =
       | a::b -> 
           (match y with
            |[] -> q
-           | c::d -> add2 b d (q@[(T.add a c)]))
+           | c::d -> add2 b d ((T.add a c)::q))
     let rec add1 x y z =
       match x with
       |a::b ->
           (match y with
-           |c::d -> add1 b d (z@[add2 a c []])
+           |c::d -> add1 b d ((reverse (add2 a c []))::z)
            | _ -> raise Comatta)
       | _ -> z
-    let add x y = add1 x y []
+    let add x y = reverse (add1 x y [])
     let rec mul2 x y q =
         match x with 
         | [] -> q
@@ -107,13 +114,13 @@ module Matrix =
                 | c::d -> mul2 b d (T.add q (T.mul a c)))
     let rec mul1 x y z =
         match y with
-                |c::d -> mul1 x d (z@([mul2 x c T.zero]))
+                |c::d -> mul1 x d ((mul2 x c T.zero)::z)
                 | _ -> z
     let rec mul0 x y z t =
         match x with 
         | a::b ->
-                mul0 b y (z@([mul1 a (trans y) []])) t
-        | _ -> Printf.printf "%f sec\n" (Sys.time() -. t); z
+                mul0 b y ((mul1 a (trans y) [])::z) t
+        | _ -> Printf.printf "%f sec\n" (Sys.time() -. t); reverse z
     let mul x y = let t = Sys.time() in mul0 x y [] t
 end
 
@@ -128,14 +135,20 @@ let rec make_vector x a l =
 let rec make_matrix1 x y a l =
     match y with
     |0 -> l
-    |_ -> make_matrix1 x (y-1) a ([make_vector x a []]@l)
+    |_ -> make_matrix1 x (y-1) a ((make_vector x a [])::l)
 
 let make_matrix x y a =
     make_matrix1 x y a [];;
 
 MatrixInt.mul (make_matrix 1 1 1) (make_matrix 1 1 3);;
+MatrixInt.mul (make_matrix 10 10 1) (make_matrix 10 10 3);;
 MatrixInt.mul (make_matrix 100 100 1) (make_matrix 100 100 3);;
+MatrixInt.mul (make_matrix 200 200 1) (make_matrix 200 200 3);;
+MatrixInt.mul (make_matrix 300 300 1) (make_matrix 300 300 3);;
+MatrixInt.mul (make_matrix 400 400 1) (make_matrix 400 400 3);;
+MatrixInt.mul (make_matrix 500 500 1) (make_matrix 500 500 3);;
+MatrixInt.mul (make_matrix 600 600 1) (make_matrix 600 600 3);;
+MatrixInt.mul (make_matrix 700 700 1) (make_matrix 700 700 3);;
+MatrixInt.mul (make_matrix 800 800 1) (make_matrix 800 800 3);;
+MatrixInt.mul (make_matrix 900 900 1) (make_matrix 900 900 3);;
 MatrixInt.mul (make_matrix 1000 1000 1) (make_matrix 1000 1000 3);;
-MatrixInt.mul (make_matrix 10000 10000 1) (make_matrix 10000 10000 3);;
-MatrixInt.mul (make_matrix 100000 100000 1) (make_matrix 100000 100000 3);;
-MatrixInt.mul (make_matrix 1000000 1000000 1) (make_matrix 1000000 1000000 3);;
