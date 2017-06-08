@@ -22,7 +22,7 @@ started = html.scan(/name=Started value="(.*?)"/).flatten.join("")
 count = 0
 
 # Started変えてみる
-started += 3
+started = (started.to_i + 5).to_s
 req = Net::HTTP::Post.new(uri.request_uri)
 req.set_form_data({'Seed' => seed, 'Started' => started}, ';')
 
@@ -57,7 +57,7 @@ end
 end
 
 p count
-if count >= 2231 then
+if count >= 2000 then
 
     HIURL = "https://icanhazwordz.appspot.com/highscores"
     hiuri = URI.parse(HIURL)

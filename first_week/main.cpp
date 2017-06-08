@@ -119,12 +119,8 @@ int main() {
 
     // Compare user input and dictionary
     for(;;) {
-        string input;
-        string s;
-        for(int i = 0; i < 16; i++){
-            cin >> s;
-            input += s;
-        }
+        string input="";
+        cin >> input;
         transform(input.begin(), input.end(), input.begin(), ::toupper);
 
         // Substitute any QU to Q
