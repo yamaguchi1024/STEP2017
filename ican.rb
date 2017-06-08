@@ -21,8 +21,20 @@ seed = html.scan(/name=Seed value="(.*?)"/).flatten.join("")
 started = html.scan(/name=Started value="(.*?)"/).flatten.join("")
 count = 0
 
+# Started変えてみる
+started += 3
+req = Net::HTTP::Post.new(uri.request_uri)
+req.set_form_data({'Seed' => seed, 'Started' => started}, ';')
+
+res = Net::HTTP.new(uri.host, uri.port).tap{|h| h.use_ssl=true}.start do |http|
+    response = http.request(req)
+    html = response.body
+end
+# おわり
+
 10.times do
     chars = html.scan(/">(.*?)<\/div><\/td>/).flatten.join("")
+    p chars
 
     main.puts chars
     ans = nil
