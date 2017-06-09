@@ -1,5 +1,5 @@
 
-let matrix_multiply x y =
+let matrixInt x y =
     let t = Sys.time() in
         let lx = Array.length x
             and ly = Array.length y in
@@ -14,15 +14,15 @@ let matrix_multiply x y =
                     done;
                     Printf.printf "%f sec\n" (Sys.time() -. t) ); z;;
 
-matrix_multiply (Array.make_matrix 1 1 1) (Array.make_matrix 1 1 3);;
-matrix_multiply (Array.make_matrix 10 10 1) (Array.make_matrix 10 10 3);;
-matrix_multiply (Array.make_matrix 100 100 1) (Array.make_matrix 100 100 3);;
-matrix_multiply (Array.make_matrix 200 200 1) (Array.make_matrix 200 200 3);;
-matrix_multiply (Array.make_matrix 300 300 1) (Array.make_matrix 300 300 3);;
-matrix_multiply (Array.make_matrix 400 400 1) (Array.make_matrix 400 400 3);;
-matrix_multiply (Array.make_matrix 500 500 1) (Array.make_matrix 500 500 3);;
-matrix_multiply (Array.make_matrix 600 600 1) (Array.make_matrix 600 600 3);;
-matrix_multiply (Array.make_matrix 700 700 1) (Array.make_matrix 700 700 3);;
-matrix_multiply (Array.make_matrix 800 800 1) (Array.make_matrix 800 800 3);;
-matrix_multiply (Array.make_matrix 900 900 1) (Array.make_matrix 900 900 3);;
-matrix_multiply (Array.make_matrix 1000 1000 1) (Array.make_matrix 1000 1000 3);;
+matrixInt (Array.make_matrix 1 1 1) (Array.make_matrix 1 1 3);;
+matrixInt (Array.make_matrix 10 10 1) (Array.make_matrix 10 10 3);;
+matrixInt (Array.make_matrix 100 100 1) (Array.make_matrix 100 100 3);;
+matrixInt (Array.make_matrix 200 200 1) (Array.make_matrix 200 200 3);;
+matrixInt (Array.make_matrix 300 300 1) (Array.make_matrix 300 300 3);;
+matrixInt (Array.make_matrix 400 400 1) (Array.make_matrix 400 400 3);;
+matrixInt (Array.make_matrix 500 500 1) (Array.make_matrix 500 500 3);;
+matrixInt (Array.make_matrix 600 600 1) (Array.make_matrix 600 600 3);;
+matrixInt (Array.make_matrix 700 700 1) (Array.make_matrix 700 700 3);;
+matrixInt (Array.make_matrix 800 800 1) (Array.make_matrix 800 800 3);;
+matrixInt (Array.make_matrix 900 900 1) (Array.make_matrix 900 900 3);;
+matrixInt (Array.make_matrix 1000 1000 1) (Array.make_matrix 1000 1000 3);;

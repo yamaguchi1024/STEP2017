@@ -61,6 +61,7 @@ module type MATRIX =
     type t
     val add : t -> t -> t
     val mul : t -> t -> t
+    val trans : t -> t -> t
   end
 
 module Matrix = 
@@ -74,7 +75,7 @@ module Matrix =
       match x with
       | a::b ->
          (match a with
-         |c::d -> (bind b (c::y))
+         |c::d -> reverse (bind b (c::y))
          |[]  -> raise Comatta)
       | _ -> y
     let rec sakujo x y =
@@ -89,7 +90,7 @@ module Matrix =
        |a::b when a=[] -> y
        |a::b -> trans1 (sakujo x []) ((bind x [])::y)
        | _ -> y
-    let trans x = trans1 x []
+    let trans x = reverse (trans1 x [])
     let rec add2 x y q =
       match x with 
       | [] -> q
