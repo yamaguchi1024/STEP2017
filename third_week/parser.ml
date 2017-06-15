@@ -94,14 +94,17 @@ and parse x =
 (* translator from parse trees to abstract syntax trees 
   (that represent logical structures of expressions)
 *)
-type ast = ASTid of string
+type ast = ASTint of int 
+         | ASTfloat of float
          | ASTtimes of ast * ast
+         | ASTdiv of ast * ast
          | ASTplus of ast * ast
          | ASTminus of ast * ast
 
 let rec pt2ast pt =
   match pt with
-    PTt(EINT(x)) -> ASTid x
+    PTt(EINT(x)) -> ASTint (int_of_string x)
+  | PTt(EFLOAT(x)) -> ASTfloat (float_of_string x)
   | PTnt("S", [pt';_]) -> pt2ast pt'
   | PTnt("E", [pt1;pt2]) ->
      let ast1 = pt2ast pt1 in
@@ -132,7 +135,7 @@ and g_or_h2ast pt ast =
         g_or_h2ast pt2 ast0
   | PTnt("H", [PTt EDIV; PTnt("T", [pt1; pt2])])->
       let ast1 = pt2ast pt1 in
-      let ast0 = ASTtimes(ast, ast1) in
+      let ast0 = ASTdiv(ast, ast1) in
         g_or_h2ast pt2 ast0
   | PTnt("H", []) -> ast
   | _ -> assert false
