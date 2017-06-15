@@ -108,45 +108,45 @@ type symbol = NT of string | T of expr
 
 (* LL1 parsing table
   　　　　　+    -      INT      (   FLOAT      )      *      /      $   
-  　　　S                S->E$  S->E$  S->E$
-      E                E->TG  E->TG  E->TG
+  　　S                S->E$  S->E$  S->E$
+      E                E->TG  E->TG  E->TG  
       G  G->+E  G->-E                          G->ε                G->ε  
       T                T->FH  T->FH  T->FH
-      H  H->ε  H->ε                                   H->*T  H->/T H->ε 
-      F                F->INT F->(E) F->FLOAT F->(E)
+      H  H->ε  H->ε                            H->ε   H->*T  H->/T H->ε 
+      F                F->INT F->(E) F->FLOAT
 *)
 let tab : (nt * (expr -> symbol list)) list = 
 
     [("S", fun t -> 
         match t with
            (EINT _ |ELPAR|EFLOAT _) -> [NT "E"; T EOF]
- | _ -> raise ERROR);
+            | _ -> raise ERROR);
    ("E", fun t ->
        match t with
            (EINT _ |ELPAR|EFLOAT _) -> [NT "T"; NT "G"]
- | _ -> raise ERROR);
+            | _ -> raise ERROR);
    ("G", fun t ->
        match t with
             EPLUS -> [T EPLUS ; NT "E"]
- | EMINUS -> [T EMINUS ; NT "E"]
- | (ERPAR|EOF) -> []
- | _ -> raise ERROR);
+            | EMINUS -> [T EMINUS ; NT "E"]
+            | (ERPAR|EOF) -> []
+            | _ -> raise ERROR);
    ("T", fun t->
        match t with
            (EINT _|ELPAR|EFLOAT _) -> [NT "F"; NT "H"]
- | _ -> raise ERROR);
+            | _ -> raise ERROR);
    ("H", fun t ->
        match t with
             EMUL -> [T EMUL ; NT "T"]
- | EDIV -> [T EDIV ; NT "T"]
- | (EPLUS|EMINUS|EOF) -> []
- | _ -> raise ERROR);
+            | EDIV -> [T EDIV ; NT "T"]
+            | (EPLUS|EMINUS|ERPAR|EOF) -> []
+            | _ -> raise ERROR);
    ("F", fun t->
        match t with
             EINT(s) -> [T t]
- | EFLOAT(s) -> [T t]
- | ELPAR -> [T ELPAR; NT "E"; T ERPAR]
- | _ -> raise ERROR)
+            | EFLOAT(s) -> [T t]
+            | ELPAR -> [T ELPAR; NT "E"; T ERPAR]
+            | _ -> raise ERROR)
  ]
 
 let input_buffer = ref [| |];;
@@ -170,9 +170,9 @@ let rec parsing token_list =
      (* LL(1) parser *)
  and parse x =    
      match x with
-    T t -> 
+     T t -> 
         if read_token()=t then PTt(t) else raise ERROR
- | NT nt ->
+    | NT nt ->
          let body = lookup_LL1table nt (lookahead()) in
          let ptlist = List.map parse body in
          PTnt(nt, ptlist)
@@ -277,4 +277,4 @@ let rec main () =
     print_value(eval_expr(pt2ast(parsing(lexer(read_line())))));
     main ();;
 
-let _ = main ()
+let _ = main () 
