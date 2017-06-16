@@ -280,4 +280,4 @@ let rec main () =
     print_value(eval_expr(pt2ast(parsing(lexer(read_line())))));
     main ();;
 
-(* let _ = main () *)
+let _ = main () 
