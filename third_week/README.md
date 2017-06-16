@@ -32,3 +32,50 @@
 > (2-3)*9
 -9
 ```
+
+* lexer 動作例
+```
+# lexer(read_line());;
+3+2-1*2.2+2.2222
+- : expr list =
+[EINT "3"; EPLUS; EINT "2"; EMINUS; EINT "1"; EMUL; EFLOAT "2.2"; EPLUS;
+ EFLOAT "2.2222"]
+# lexer(read_line());;
+7.77777-1.2222*222
+- : expr list = [EFLOAT "7.77777"; EMINUS; EFLOAT "1.2222"; EMUL; EINT "222"]
+```
+
+* parser 動作例。構文木
+```
+# parsing(lexer(read_line()));;
+7.77777-1.2222*222.55
+- : ptree =
+PTnt ("S",
+ [PTnt ("E",
+   [PTnt ("T", [PTnt ("F", [PTt (EFLOAT "7.77777")]); PTnt ("H", [])]);
+    PTnt ("G",
+     [PTt EMINUS;
+      PTnt ("E",
+       [PTnt ("T",
+         [PTnt ("F", [PTt (EFLOAT "1.2222")]);
+          PTnt ("H",
+           [PTt EMUL;
+            PTnt ("T", [PTnt ("F", [PTt (EFLOAT "222.55")]); PTnt ("H", [])])])]);
+        PTnt ("G", [])])])]);
+  PTt EOF])
+```
+
+* 抽象構文木
+```
+# pt2ast(parsing(lexer(read_line())));;
+7.77777-1.2222*222.55
+- : ast =
+ESub (EConstFloat 7.77777, EMul (EConstFloat 1.2222, EConstFloat 222.55))
+```
+
+* eval 動作例
+```
+# eval_expr(pt2ast(parsing(lexer(read_line()))));;
+7.77777-(1.2222*222.55)
+- : value = VFloat (-264.22284)
+```

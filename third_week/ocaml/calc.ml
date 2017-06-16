@@ -1,5 +1,5 @@
 
-(* lexer *)
+(* ここからlexer *)
 let rec reverse1 = fun x y ->
     match x with
             |[] -> y
@@ -37,14 +37,14 @@ let get_lexeme() =
  | INVALID -> assert false
 
  (* 一文字読みこむ *)
-    let readc() =
-        let c = !input_buffer.[!pos_current] in (pos_current:= !pos_current+1; c)
+let readc() =
+    let c = !input_buffer.[!pos_current] in (pos_current:= !pos_current+1; c)
         (* マッチしたトークンとその場所を保存 *)
 let save token = (last_token := token; last_pos := !pos_current)
 
 (* メイン：文字列inputを受け取り、トークン列に分解して表示 *)
 let rec lexer (input: string) =
-    res := [];
+   res := [];
    input_buffer := (input^"\000"); (* inputに文字列の最後を表す"\000"を追加 *)
    pos_start := 0; pos_current := 0; last_token := INVALID;
    q0(); reverse (!res);
@@ -88,7 +88,7 @@ and next() =
         pos_current := !pos_start; last_token := INVALID;
         q0())
 
-        (* LL1 parser *)
+(* ここからLL1 parser *)
 
 (*
 S -> E$
@@ -167,7 +167,6 @@ let rec parsing token_list =
    current_pos := 0;
      parse (NT "S")
 
-     (* LL(1) parser *)
  and parse x =    
      match x with
      T t -> 
@@ -178,7 +177,7 @@ let rec parsing token_list =
          PTnt(nt, ptlist)
 
 
-         (* translator from parse trees to abstract syntax trees 
+ (* translator from parse trees to abstract syntax trees 
   (that represent logical structures of expressions)
 *)
 type ast = EConstInt of int 
@@ -191,19 +190,19 @@ type ast = EConstInt of int
 let rec pt2ast pt =
     match pt with
     PTt(EINT(x)) -> EConstInt (int_of_string x)
- | PTt(EFLOAT(x)) -> EConstFloat (float_of_string x)
- | PTnt("S", [pt';_]) -> pt2ast pt'
-  | PTnt("E", [pt1;pt2]) ->
+   | PTt(EFLOAT(x)) -> EConstFloat (float_of_string x)
+   | PTnt("S", [pt';_]) -> pt2ast pt'
+   | PTnt("E", [pt1;pt2]) ->
           let ast1 = pt2ast pt1 in
           g_or_h2ast pt2 ast1 
-  | PTnt("T", [pt1;pt2]) ->
+   | PTnt("T", [pt1;pt2]) ->
           let ast1 = pt2ast pt1 in
           g_or_h2ast pt2 ast1 
-  | PTnt("F", [pt1]) ->
+   | PTnt("F", [pt1]) ->
           pt2ast pt1
-  | PTnt("F", [PTt ELPAR;pt1;PTt ERPAR]) ->
+   | PTnt("F", [PTt ELPAR;pt1;PTt ERPAR]) ->
           pt2ast pt1
-  | _ -> assert false
+   | _ -> assert false
 
 and g_or_h2ast pt ast =
     match pt with
@@ -227,10 +226,13 @@ and g_or_h2ast pt ast =
   | PTnt("H", []) -> ast
   | _ -> assert false
 
+(* ここからeval *)
+
 type value = VInt of int | VFloat of float
 
 exception EvalErr
 
+(* int + float などはエラーを出す *)
 let rec eval_expr e =
     match e with
   | EConstInt i ->
@@ -240,32 +242,33 @@ let rec eval_expr e =
   | EAdd (e1,e2) ->
           let v1 = eval_expr e1 in
           let v2 = eval_expr e2 in
-          (match v1, v2 with
-     | VInt i1, VInt i2 -> VInt (i1 + i2)
-     | VFloat i1, VFloat i2 -> VFloat (i1 +. i2)
-     | _ -> raise EvalErr)
-          | ESub (e1,e2) ->
-                  let v1 = eval_expr e1 in
-                  let v2 = eval_expr e2 in
-                  (match v1, v2 with
-     | VInt i1, VInt i2 -> VInt (i1 - i2)
-     | VFloat i1, VFloat i2 -> VFloat (i1 -. i2)
-     | _ -> raise EvalErr)
-                  | EMul (e1,e2) ->
-                          let v1 = eval_expr e1 in
-                          let v2 = eval_expr e2 in
-                          (match v1, v2 with
-     | VInt i1, VInt i2 -> VInt (i1 * i2)
-     | VFloat i1, VFloat i2 -> VFloat (i1 *. i2)
-     | _ -> raise EvalErr)
-                          | EDiv (e1,e2) ->
-                                  let v1 = eval_expr e1 in
-                                  let v2 = eval_expr e2 in
-                                  (match v1, v2 with
-     | VInt i1, VInt i2 -> VInt (i1 / i2)
-     | VFloat i1, VFloat i2 -> VFloat (i1 /. i2)
-     | _ -> raise EvalErr)
+                 (match v1, v2 with
+                     | VInt i1, VInt i2 -> VInt (i1 + i2)
+                     | VFloat i1, VFloat i2 -> VFloat (i1 +. i2)
+                     | _ -> raise EvalErr)
+  | ESub (e1,e2) ->
+          let v1 = eval_expr e1 in
+          let v2 = eval_expr e2 in
+                 (match v1, v2 with
+                     | VInt i1, VInt i2 -> VInt (i1 - i2)
+                     | VFloat i1, VFloat i2 -> VFloat (i1 -. i2)
+                     | _ -> raise EvalErr)
+  | EMul (e1,e2) ->
+          let v1 = eval_expr e1 in
+          let v2 = eval_expr e2 in
+                 (match v1, v2 with
+                     | VInt i1, VInt i2 -> VInt (i1 * i2)
+                     | VFloat i1, VFloat i2 -> VFloat (i1 *. i2)
+                     | _ -> raise EvalErr)
+  | EDiv (e1,e2) ->
+          let v1 = eval_expr e1 in
+          let v2 = eval_expr e2 in
+                 (match v1, v2 with
+                     | VInt i1, VInt i2 -> VInt (i1 / i2)
+                     | VFloat i1, VFloat i2 -> VFloat (i1 /. i2)
+                     | _ -> raise EvalErr)
 
+(* いい感じに表示する *)
 let print_value v =
     match v with
     | VInt i -> print_int i; print_string "\n"
@@ -277,4 +280,4 @@ let rec main () =
     print_value(eval_expr(pt2ast(parsing(lexer(read_line())))));
     main ();;
 
-let _ = main () 
+(* let _ = main () *)
