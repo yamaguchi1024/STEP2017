@@ -7,7 +7,7 @@
 using namespace std;
 
 #define MAX_V 2000000
-int V = 0; //node
+int V = 1483277; //node
 vector<int> G[MAX_V]; // G[i]はiから伸びている辺の終端のvector
 vector<int> rG[MAX_V]; // 辺の向きを逆にしたグラフ
 vector<int> vs;
@@ -59,8 +59,6 @@ int main() {
     while(!ifs.eof()) {
         ifs >> from >> to;
         add_edge(from,to);
-        V++;
-        printf("%d\n",V);
     }
 
     printf("%d\n", scc());
