@@ -11,6 +11,7 @@ int V = 1483277; //node
 vector<int> G[MAX_V]; // G[i]はiから伸びている辺の終端のvector
 vector<int> rG[MAX_V]; // 辺の向きを逆にしたグラフ
 vector<int> vs;
+vector<int> S;
 bool used[MAX_V];
 int cmp[MAX_V];
 
@@ -21,8 +22,15 @@ void add_edge(int from, int to) {
 
 void dfs(int v) {
     used[v] = true;
-    for (int i = 0; i < G[v].size(); i++) {
-        if (!used[G[v][i]]) dfs(G[v][i]);
+    S.push_back(v);
+    printf("%lu\n", G[v].size());
+    while(!S.empty()) {
+        int u = S.back(); S.pop_back();
+        if (!used[u]) {
+            for (int i = 0; i < G[u].size(); i++) {
+                S.push_back(G[u][i]);
+            }
+        }
     }
     vs.push_back(v);
 }
