@@ -60,7 +60,7 @@ void scc() {
     }
     printf("強連結成分の個数 %d\n",size);
     printf("最大の強連結成分のノードの数 %d\n",max);
-    printf("強連結成分のノード:\n\n");
+    printf("最大の強連結成分のノード:\n\n");
     for(int i = 0; i < res.size(); i++) {
         cout << page[res.back()] << endl;
         res.pop_back();
