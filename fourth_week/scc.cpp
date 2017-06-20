@@ -10,10 +10,10 @@ using namespace std;
 int V = 1483277; //node
 vector<int> G[MAX_V]; // G[i]はiから伸びている辺の終端のvector
 vector<int> rG[MAX_V]; // 辺の向きを逆にしたグラフ
-vector<int> vs;
-bool used[MAX_V];
-int cmp[MAX_V];
-string page[MAX_V];
+vector<int> vs; // 通った順に入れていく。sccが番号つけるのに対応してる
+bool used[MAX_V]; // DFSなので
+string page[MAX_V]; // 題名
+vector<int> nodes; // 順番を保存して表示するため
 
 void add_edge(int from, int to) {
     G[from].push_back(to);
@@ -28,10 +28,8 @@ void dfs(int v) {
     vs.push_back(v);
 }
 
-vector<int> nodes;
 int rdfs(int v, int k, int s) {
     used[v] = true;
-    cmp[v] = k;
     nodes.push_back(v);
     for (int i = 0; i < rG[v].size(); i++) {
         if (!used[rG[v][i]]) return rdfs(rG[v][i], k, ++s);
