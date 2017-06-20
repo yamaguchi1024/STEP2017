@@ -12,71 +12,82 @@ vector<int> G[MAX_V]; // G[i]はiから伸びている辺の終端のvector
 vector<int> rG[MAX_V]; // 辺の向きを逆にしたグラフ
 vector<int> vs;
 bool used[MAX_V];
-vector<int> queue;
+int cmp[MAX_V];
+string page[MAX_V];
 
 void add_edge(int from, int to) {
     G[from].push_back(to);
     rG[to].push_back(from);
 }
 
-int rdfs(int v, int scc_num, int size) {
+void dfs(int v) {
     used[v] = true;
-    for (int i = 0; i < rG[v].size(); i++) {
-        if (!used[rG[v][i]]) return rdfs(rG[v][i], scc_num, size++);
+    for (int i = 0; i < G[v].size(); i++) {
+        if (!used[G[v][i]]) dfs(G[v][i]);
     }
-    return size;
+    vs.push_back(v);
+}
+
+vector<int> nodes;
+int rdfs(int v, int k, int s) {
+    used[v] = true;
+    cmp[v] = k;
+    nodes.push_back(v);
+    for (int i = 0; i < rG[v].size(); i++) {
+        if (!used[rG[v][i]]) return rdfs(rG[v][i], k, ++s);
+    }
+    return s;
 }
 
 void scc() {
     memset(used, 0, sizeof(used));
-
     vs.clear();
-    queue.clear();
-    std::vector<int> queue;
     for (int v = 0; v < V; v++) {
-        if (!used[v]) {
-            used[v] = true;
-            queue.push_back(v);
-        }
-        while (!queue.empty()) {
-            int v = queue.back(); queue.pop_back();
-            vs.push_back(v);
-            for (int i = 0; i < G[v].size(); i++)
-                if (!used[G[v][i]]) {
-                    used[v] = true;
-                    queue.push_back(G[v][i]);
-                }
-        }
+        if (!used[v]) dfs(v);
     }
-
-    printf("dfs1回目 終了\n");
-
     memset(used, 0, sizeof(used));
-    int scc_num = 0, max_size = 0, tmp;
-    for (int i = 0; i < vs.size(); i++) {
-        if (!used[vs[i]])
-            if( (tmp = rdfs(vs[i], scc_num++, 1)) > max_size )
-                max_size = tmp;
+    printf("第一回終わり\n");
+    int size = 0, max = 0,tmp,max_n;
+    vector<int> res;
+    for (int i = vs.size() - 1; i >= 0; i--) {
+        if (!used[vs[i]]) {
+            nodes.clear();
+            if( (tmp = rdfs(vs[i], size++, 1)) > max ) {
+                max = tmp;
+                max_n = size - 1;
+                res = nodes;
+            }
+        }
     }
-    printf("強連結成分の数: %d\n",scc_num);
-    printf("最大の強連結成分の大きさ: %d\n",max_size);
+    printf("強連結成分の個数 %d\n",size);
+    printf("最大の強連結成分のノードの数 %d\n",max);
+    printf("強連結成分のノード:\n");
+    for(int i = 0; i < res.size(); i++) {
+        cout << page[res.back()] << endl;
+        res.pop_back();
+    }
     return;
 }
 
 int main() {
+    int from,to;
+    int num;
+    string name;
+
+    ifstream ips("pages.txt");
+    if (ips.fail())
+        perror("pages open error");
+    while(!ips.eof()) {
+        ips >> num >> name;
+        page[num]=name;
+    }
+
     ifstream ifs("links.txt");
     if (ifs.fail())
         perror("links open error");
-
-    int from,to;
-    int s = 52973671;
-
-    int i = 0;
     while(!ifs.eof()) {
- //       if(i >= (s/10000)) break;
         ifs >> from >> to;
         add_edge(from,to);
-        i++;
     }
 
     scc();
