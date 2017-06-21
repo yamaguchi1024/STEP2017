@@ -14,6 +14,7 @@ vector<int> vs; // 通った順に入れていく。sccが番号つけるのに�
 bool used[MAX_V]; // DFSなので
 string page[MAX_V]; // 題名
 vector<int> nodes; // 順番を保存して表示するため
+vector<int> all[MAX_V];
 
 void add_edge(int from, int to) {
     G[from].push_back(to);
@@ -54,6 +55,7 @@ void scc() {
                 max_n = size - 1;
                 res = nodes;
             }
+            all[size - 1] = nodes;
         }
     }
     printf("強連結成分の個数 %d\n",size);
@@ -63,6 +65,15 @@ void scc() {
         cout << page[res.back()] << endl;
         res.pop_back();
     }
+
+    printf("全ての強連結成分を表示するよ:\n\n");
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < all[i].size(); j++) {
+        cout << page[all[i].back()] << endl;
+        all[i].pop_back();
+      }
+    }
+
     return;
 }
 
