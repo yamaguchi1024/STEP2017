@@ -66,12 +66,16 @@ void scc() {
         res.pop_back();
     }
 
-    printf("全ての強連結成分を表示するよ:\n\n");
+    printf("ノード数が1でない全ての強連結成分を表示するよ:\n\n");
     for (int i = 0; i < size; i++) {
+      if (all[i].size() <= 2)
+        continue;         
+      printf("%d 個目の強連結成分 大きさ: %d \n\n",i,all[i].size()-1);  
       for (int j = 0; j < all[i].size(); j++) {
         cout << page[all[i].back()] << endl;
         all[i].pop_back();
       }
+      printf("\n");  
     }
 
     return;
