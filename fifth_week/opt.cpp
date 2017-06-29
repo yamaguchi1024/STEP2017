@@ -17,7 +17,7 @@ int V = - 1;
 int used[MAX_V];
 
 double dist(P s, P e) {
-  return sqrt(pow(s.first - e.first, 2.0) + pow(s.second - e.second, 2.0));
+  return pow(s.first - e.first, 2.0) + pow(s.second - e.second, 2.0);
 }
 
 int find_min(int cur) {
@@ -31,7 +31,6 @@ int find_min(int cur) {
       res = i;
     }
   }
-
   return res;
 }
 
@@ -47,44 +46,25 @@ void greedy() {
   }
 }
 
-int next(int v) {
-  if (route[V - 1] == v)
-    return 0;
-  for (int i = 0; i < V - 1; i++)
-    if (route[i] == v)
-      return route[i+1];
-}
-
-int R(int v) {
-  for (int i = 0; i < V - 1; i++)
-    if (route[i] == v)
-      return i;
-}
-
 double D(int a, int b) {
-  return dist(points[a], points[b]);
+  return dist(points[route[a]], points[route[b]]);
 }
 
-int think(int s1, int d1, int s2, int d2) {
-  if (D(s1,d2) + D(s2,d1) < D(s1,d1) + D(s2,d2)) {
-    reverse(route.begin() + R(s1) + 1, route.begin() + R(d2));
+int swap(int i, int j) {
+  if (D(i, j-1) + D(j, i+1) < D(i, i+1) + D(j-1, j)) {
+    reverse(route.begin() + i + 1, route.begin() + j);
     return 1;
   }
   return 0;
 }
 
 void opt() {
-  for(int h = 0;h < 1;h++) {
+  for(;;) {
     int better = 1;
-    for (int i = 0; i < V; i++) {
-      for (int j = 0; j < V; j++) {
-        if (i == j) continue;
-
-        if (think(i, next(i), j, next(j)))
+    for (int i = 1; i < V; i++)
+      for (int j = i + 3; j < V; j++)
+        if (swap(i, j))
           better = 0;
-      }
-    }
-
     if (better) break;
   }
 }
@@ -99,21 +79,23 @@ int main(int argc, char **argv) {
   ifstream ips(argv[1]);
   if (ips.fail())
     perror("file open error");
+  ips.ignore(1000, '\n');
+
   while(!ips.eof()) {
-    ips >> x >> y;
+    ips >> x;
+    ips.ignore(1000, ',');
+    ips >> y;
     points.push_back(P(x,y));
     V++;
   }
 
   greedy();
-  change(0, 1993);
-  change(1993, 0);
 
-//  opt();
+  opt();
 
   cout << "index" << endl;
-  for (int i : route)
-    cout << i << endl;
+  for (int r : route)
+    cout << r << endl;
 
   return 0;
 }
