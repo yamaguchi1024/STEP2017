@@ -6,8 +6,8 @@
 #include <math.h>
 #include <fstream>
 #include <assert.h>
-#define MAX_V 2048
-#define MAX_NUM 100000000.0 
+#define MAX_V 4194304
+#define MAX_NUM 10000000000.0 
 using namespace std;
 
 typedef pair<double,double> P;
