@@ -55,23 +55,19 @@ int next(int v) {
       return route[i+1];
 }
 
-void change(int a, int b) {
-  int a_i, b_i;
-  for (int i = 0; i < V; i++) {
-    if (route[i] == a)
-      a_i = i;
-    if (route[i] == b)
-      b_i = i;
-  }
+int R(int v) {
+  for (int i = 0; i < V - 1; i++)
+    if (route[i] == v)
+      return i;
+}
 
-  cout << a_i << " " << b_i << endl;
-  route[a_i] = b;
-  route[b_i] = a;
+double D(int a, int b) {
+  return dist(points[a], points[b]);
 }
 
 int think(int s1, int d1, int s2, int d2) {
-  if (dist(points[s1],points[d2]) + dist(points[s2],points[d1]) < dist(points[s1],points[d1]) + dist(points[s2],points[d2])) {
-    change(d1,d2);
+  if (D(s1,d2) + D(s2,d1) < D(s1,d1) + D(s2,d2)) {
+    reverse(route.begin() + R(s1) + 1, route.begin() + R(d2));
     return 1;
   }
   return 0;
