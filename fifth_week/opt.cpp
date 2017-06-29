@@ -47,7 +47,15 @@ void greedy() {
 }
 
 double D(int a, int b) {
-  return dist(points[route[a]], points[route[b]]);
+  return sqrt(dist(points[route[a]], points[route[b]]));
+}
+
+double total_dist() {
+  double res = 0.0;
+  for (int i = 1; i < V; i++)
+    res += D(i-1, i);
+  res += D(0, V-1);
+  return res;
 }
 
 int swap(int i, int j) {
@@ -59,7 +67,7 @@ int swap(int i, int j) {
 }
 
 void opt() {
-  for(;;) {
+  for(int h = 0; h < 1; h ++) {
     int better = 1;
     for (int i = 1; i < V; i++)
       for (int j = i + 3; j < V; j++)
@@ -92,6 +100,8 @@ int main(int argc, char **argv) {
   greedy();
 
   opt();
+
+  cerr << fixed << total_dist() << endl;
 
   cout << "index" << endl;
   for (int r : route)
