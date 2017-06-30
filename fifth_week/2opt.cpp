@@ -67,7 +67,7 @@ int swap(int i, int j) {
 }
 
 void opt() {
-  for(;;) {
+  for(int h = 0;h < 1;h++) {
     int better = 1;
     for (int i = 1; i < V - 4; i++)
       for (int j = i + 3; j < V; j++)
