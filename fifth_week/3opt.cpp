@@ -75,7 +75,6 @@ int swap(int i, int j, int k) {
       min = R[u];
       pos = u;
     }
-  vector<int> tmp = route;
   switch (pos) {
     case 1:
       reverse(route.begin() + i+1, route.begin() + j+1);
@@ -105,10 +104,9 @@ int swap(int i, int j, int k) {
 }
 
 void opt() {
-  for(int h = 0;h < 1;h++) {
+  for(;;) {
     int better = 1;
     for (int i = 1; i < V - 6; i++) {
-      cout << i << endl;
       for (int j = i + 3; j < V - 4; j++)
         for (int k = j + 3; k < V; k++)
           if (swap(i, j, k))
