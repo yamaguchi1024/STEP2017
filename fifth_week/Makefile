@@ -1,7 +1,7 @@
 CXX = clang++
 CXXFLAGS = -std=c++11 -O2 -ffast-math
 
-all: 2opt 2.5opt 3opt greedy random
+all: 2opt 2.5opt 3opt nn random
 
 2opt: 2opt.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
@@ -12,13 +12,13 @@ all: 2opt 2.5opt 3opt greedy random
 3opt: 3opt.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-greedy: greedy.o
+nn: nn.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 random: random.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean:
-	rm -f *.o 2opt 2.5opt 3opt greedy random
+	rm -f *.o 2opt 2.5opt 3opt nn random
 
 .PHONY: all clean

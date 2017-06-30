@@ -59,7 +59,6 @@ double total_dist() {
 }
 
 int swap(int i, int j, int k) {
-  //cerr << i << " " << j << " " << k << endl;
   double R[7];
   double min = MAX_NUM;
   int pos;
@@ -106,12 +105,11 @@ int swap(int i, int j, int k) {
 void opt() {
   for(;;) {
     int better = 1;
-    for (int i = 1; i < V - 6; i++) {
+    for (int i = 1; i < V - 6; i++)
       for (int j = i + 3; j < V - 4; j++)
         for (int k = j + 3; k < V; k++)
           if (swap(i, j, k))
             better = 0;
-    }
     if (better) break;
   }
 }
