@@ -5,4 +5,5 @@ fourth_week/links.txt
 fourth_week/pages.txt
 fourth_week/peda-session-scc.txt
 fifth_week/input_*
-fifth_week/res
+fifth_week/res*
+*.o
