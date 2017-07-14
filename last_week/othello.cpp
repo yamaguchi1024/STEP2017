@@ -142,15 +142,12 @@ int main() {
     return 0;
   }
 
-  // 終盤だったら
-  /*
   if (Cstone(Board) > 55) {
     sort(vec.begin(),vec.end(),sort_greater);
     P p = vec[0].first;
     printf("[%d,%d]",p.second + 1, p.first + 1);
     return 0;
   }
-  */
 
   if (Cstone(Board) > 40) {
     P max_p;
