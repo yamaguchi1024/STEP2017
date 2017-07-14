@@ -11,17 +11,44 @@ using namespace std;
 typedef pair<int,int> P;
 int Eval[8][8] =
 { {  99, -8, 8, 6, 6, 8, -8, 99 },
-  {  -8, -24, -4, -3, -3, -4, -24, -8 }, 
+  {  -8, -24, -4, 4, 4, -4, -24, -8 }, 
   {  8, -4, 7,  4,  4,  7,  -4, 8 },
-  {  6,  -3, 4,  0,  0,  4,  -3, 6 }, 
-  {  6,  -3, 4,  0,  0,  4,  -3, 6 },
+  {  6,  4, 4,  0,  0,  4,  4, 6 }, 
+  {  6,  4, 4,  0,  0,  4,  4, 6 },
   {  8,  -4, 7,  4,  4,  7,  -4, 8 },
-  {  -8, -24,  -4, -3, -3, -4, -24,  -8 },
+  {  -8, -24,  -4, 4, 4, -4, -24,  -8 },
   {  99, -8, 8,  6,  6,  8,  -8, 99 } };
+
+void Eval_reset(char Board[8][8]) {
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      if (Board[0][0] == '1') {
+        Eval[0][1] = 20;
+        Eval[1][0] = 20;
+        Eval[1][1] = 20;
+      }
+      else if (Board[0][7] == '1') {
+        Eval[0][6] = 20;
+        Eval[1][7] = 20;
+        Eval[1][6] = 20;
+      }
+      else if (Board[7][0] == '1') {
+        Eval[6][0] = 20;
+        Eval[7][1] = 20;
+        Eval[6][1] = 20;
+      }
+      else if (Board[7][7] == '1') {
+        Eval[7][6] = 20;
+        Eval[6][7] = 20;
+        Eval[6][6] = 20;
+      }
+    }
+  }
+}
 
 static void connect_alarm(int signo)
 {
-  printf("hoge\n");  
+  printf("PASS\n");  
   exit(0);
 }
 
@@ -78,7 +105,7 @@ int Cstone(char Board[8][8]) {
 }
 
 bool sort_greater(const pair<P,int> &left, const pair<P,int> &right){
-    return left.second > right.second;
+  return left.second > right.second;
 }
 
 int main() {
@@ -87,6 +114,8 @@ int main() {
 
   char Board[8][8];
   for(int i = 0; i < 8; i++) scanf("%s", Board[i]);
+  Eval_reset(Board);
+
   vector<pair<P,int> > vec = Placable(Board);
   if (vec.empty()) {
     printf("PASS");
@@ -94,23 +123,25 @@ int main() {
   }
 
   // 終盤だったら
-  if (Cstone(Board) > 40) {
+  if (Cstone(Board) > 50) {
     sort(vec.begin(),vec.end(),sort_greater);
     P p = vec[0].first;
-    printf("%c%d\n",p.second + 'A', p.first + 1);
+    printf("%c%d",p.second + 'A', p.first + 1);
     return 0;
   }
 
   P max_p;
   int max_n = -500000;
+  int max_s = -500000;
   for (int i = 0; i < vec.size(); i++) {
     P p = vec[i].first;
-    int t = Eval[p.first][p.second] + vec[i].second;
-    if (t > max_n) {
+    int t = Eval[p.first][p.second];
+    if (t > max_n || (t == max_n && max_s < vec[i].second)) {
       max_n = t;
       max_p = p;
+      max_s =  vec[i].second;
     }
   }
-  printf("%c%d\n",max_p.second + 'A', max_p.first + 1);
+  printf("%c%d",max_p.second + 'A', max_p.first + 1);
   return 0;
 }
