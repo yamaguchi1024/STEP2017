@@ -39,8 +39,7 @@ int Calc_eval(const char Board[8][8]) {
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
       if (Board[i][j] == '*') continue;
-      else if (Board[i][j] == '0') res -= Eval[i][j];
-      else res += Eval[i][j];
+      else if (Board[i][j] == '1') res ++;
     }
   }
   return res;
@@ -101,8 +100,9 @@ int calmax(const vector<pair<P,int> > &vec) {
 }
 
 int minmax(char Board[8][8], int player, int depth) {
-  if (depth == 0)
+  if (depth == 0) {
     return Calc_eval(Board);
+  }
 
   if (player == 1) {
     vector<pair<P,int> > newvec = Placable(Board);
@@ -172,11 +172,6 @@ int main() {
     return 0;
   }
 
-  for (pair<P,int> pa : vec) {
-    P p = pa.first;
-    printf("%c%d\n",p.second + 'A', p.first + 1);
-  }
-
   int max_b = -5000;
   P max_p;
   for (int i = 0; i < vec.size(); i++) {
@@ -184,7 +179,7 @@ int main() {
     memcpy(newBoard, Board, 64);
     P p = vec[i].first;
     newBoard[p.first][p.second] = 1;
-    int t = minmax(newBoard, 0, 10);
+    int t = minmax(newBoard, 0, 3);
     if (max_b < t) {
       max_b = t;
       max_p = p;
